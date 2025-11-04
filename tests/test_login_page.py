@@ -22,7 +22,7 @@ class TestLoginPage(BaseTest):
 
     @allure.title('Авторизация пользователя')
     @allure.severity(allure.severity_level.CRITICAL)
-    @pytest.mark.test
+    #@pytest.mark.test
     def test_user_authorization(self):
         self.login_page.open()
         self.login_page.is_opened()

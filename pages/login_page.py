@@ -1,5 +1,4 @@
 import allure
-from playwright.sync_api import expect
 
 from config.links import Links
 from elements.base_element import BaseElement
@@ -26,7 +25,7 @@ class LoginPage(HeaderPage):
 
     def login_form_is_displayed(self):
         with allure.step(f'{self.login_form.name} отображается'):
-            expect(
+            self.expect(
                 self.login_form.find_element(),
                 self.attach_screenshot(self.login_form.name)
             )
@@ -55,14 +54,14 @@ class LoginPage(HeaderPage):
 
     def should_be_correct_placeholders_in_login_form(self, exp_email_placeholder, exp_password_placeholder):
         with allure.step(f'Проверить плэйсхолдеры в {self.login_form.name}'):
-            expect(
+            self.expect(
                 self.email_input.find_element(),
                 self.attach_screenshot(self.email_input.name)
             ).to_have_attribute(
                 name='placeholder',
                 value=exp_email_placeholder
             )
-            expect(
+            self.expect(
                 self.password_input.find_element(),
                 self.attach_screenshot(self.password_input.name)
             ).to_have_attribute(
@@ -71,7 +70,7 @@ class LoginPage(HeaderPage):
 
     def error_alert_is_displayed(self, exp_alert):
         with allure.step(f'{self.alert.name} отображается'):
-            expect(
+            self.expect(
                 self.alert.find_element(),
                 self.attach_screenshot(self.alert.name)
             ).to_have_text(expected=exp_alert)

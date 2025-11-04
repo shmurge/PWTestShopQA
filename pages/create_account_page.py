@@ -2,7 +2,7 @@ import os
 
 import allure
 from dotenv import load_dotenv, set_key
-from playwright.sync_api import expect
+from playwright.sync_api import BrowserContext
 
 from config.links import Links
 from elements.base_element import BaseElement
@@ -72,28 +72,36 @@ class CreateAccountPage(HeaderPage):
             self.password_confirm_input.fill_input(data)
 
     def click_sign_up(self):
-        self.sign_up_button.click()
+        with allure.step(f'Кликнуть по {self.sign_up_button.name}'):
+            self.sign_up_button.click()
 
     def fill_registration_form(self,
                                email,
                                username,
                                password,
-                               save_to_env=True):
+                               save_to_env=True,
+                               ):
         with allure.step(f'Заполнить {self.registration_form.name}'):
             self.registration_form.is_visible()
             self.fill_email(email, save_to_env)
             self.fill_username(username, save_to_env)
             self.fill_password(password, save_to_env)
             self.fill_password_confirm(password)
-            self.sign_up_button.click()
+            self.click_sign_up()
 
     def error_alert_is_displayed(self, exp):
         with allure.step(f'{self.alert.name} отображается'):
-            expect(self.alert).to_have_text(expected=exp, use_inner_text=True)
+            self.expect(
+                self.alert.find_element(),
+                self.attach_screenshot(self.alert.name)
+            ).to_have_text(expected=exp, use_inner_text=True)
 
     def check_placeholders_in_registration_form(self, exp):
         with allure.step(f'Проверить плэйсхолдер в {self.username_input.name}'):
-            expect(self.username_input).to_have_text(expected=exp, use_inner_text=True)
+            self.expect(
+                self.username_input.find_element(),
+                self.attach_screenshot(self.username_input.name)
+            ).to_have_attribute(name='placeholder', value=exp)
 
     @staticmethod
     def set_env_key(key, value):
