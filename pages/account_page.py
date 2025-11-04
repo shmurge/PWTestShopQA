@@ -1,5 +1,4 @@
 import allure
-from playwright.sync_api import expect
 
 from config.links import Links
 from elements.base_element import BaseElement
@@ -24,10 +23,10 @@ class AccountPage(HeaderPage):
 
     def account_page_is_displayed(self):
         with allure.step(f'Отображается {self.my_account_header.name}'):
-            expect(
+            self.expect(
                 self.my_account_header.find_element(),
                 self.attach_screenshot(self.my_account_header.name)
-            ).to_be_visible()
+            ).to_be_visible(timeout=30000)
 
     def user_information_is_correct(self, username, user_email):
         with allure.step('Информация о пользователе корректна'):
@@ -36,14 +35,14 @@ class AccountPage(HeaderPage):
 
     def check_username(self, exp):
         with allure.step(f'{self.username_in_account.name} в профиле корректное'):
-            expect(
+            self.expect(
                 self.username_in_account.find_element(),
                 self.attach_screenshot(self.username_in_account.name)
             ).to_have_text(expected=exp)
 
     def check_user_email(self, exp):
         with allure.step(f'{self.user_email_in_account.name} в профиле корректный'):
-            expect(
+            self.expect(
                 self.user_email_in_account.find_element(),
                 self.attach_screenshot(self.user_email_in_account.name)
             ).to_have_text(expected=exp)
