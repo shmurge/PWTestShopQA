@@ -2,7 +2,6 @@ import os
 
 import allure
 from dotenv import load_dotenv, set_key
-from playwright.sync_api import BrowserContext
 
 from config.links import Links
 from elements.base_element import BaseElement
@@ -15,8 +14,8 @@ from pages.header_page import HeaderPage
 class CreateAccountPage(HeaderPage):
     PAGE_URL = Links.CREATE_ACCOUNT_PAGE
 
-    def __init__(self, browser):
-        super().__init__(browser)
+    def __init__(self, page):
+        super().__init__(page)
 
         self.registration_form = BaseElement(
             page=self.page, name='Форма регистрации', selector=CreateAccountPageLocators.REGISTRATION_FORM
@@ -34,7 +33,8 @@ class CreateAccountPage(HeaderPage):
             page=self.page, name='Подтверждение пароля', selector=CreateAccountPageLocators.INPUT_PASSWORD_CONFIRM
         )
         self.sign_up_button = Button(
-            page=self.page, name='Зарегистрироваться', selector=CreateAccountPageLocators.BUTTON_SUBMIT)
+            page=self.page, name='Зарегистрироваться', selector=CreateAccountPageLocators.BUTTON_SUBMIT
+        )
         self.alert = BaseElement(
             page=self.page, name='Алерт', selector=CreateAccountPageLocators.ALERT)
 

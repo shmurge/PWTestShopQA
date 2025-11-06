@@ -4,8 +4,8 @@ from config.links import Links
 from elements.base_element import BaseElement
 from elements.button import Button
 from elements.input import Input
-from pages.header_page import HeaderPage
 from locators.locs_login_page import LoginPageLocators
+from pages.header_page import HeaderPage
 
 
 class LoginPage(HeaderPage):
@@ -14,14 +14,23 @@ class LoginPage(HeaderPage):
     def __init__(self, page):
         super().__init__(page)
 
-        self.login_form = BaseElement(page=self.page, name='Форма авторизации', selector=LoginPageLocators.LOGIN_FORM)
-        self.email_input = Input(page=self.page, name='Email', selector=LoginPageLocators.EMAIL_INPUT)
-        self.password_input = Input(page=self.page, name='Пароль', selector=LoginPageLocators.PASSWORD_INPUT)
-        self.login_button = Button(page=self.page, name='Войти', selector=LoginPageLocators.LOGIN_BUTTON)
+        self.login_form = BaseElement(
+            page=self.page, name='Форма авторизации', selector=LoginPageLocators.LOGIN_FORM
+        )
+        self.email_input = Input(
+            page=self.page, name='Email', selector=LoginPageLocators.EMAIL_INPUT
+        )
+        self.password_input = Input(
+            page=self.page, name='Пароль', selector=LoginPageLocators.PASSWORD_INPUT
+        )
+        self.login_button = Button(
+            page=self.page, name='Войти', selector=LoginPageLocators.LOGIN_BUTTON
+        )
         self.create_account_link = Button(
             page=self.page, name='Создать аккаунт', selector=LoginPageLocators.CREATE_ACCOUNT_LINK
         )
-        self.alert = BaseElement(page=self.page, name='Алерт', selector=LoginPageLocators.ALERT)
+        self.alert = BaseElement(
+            page=self.page, name='Алерт', selector=LoginPageLocators.ALERT)
 
     def login_form_is_displayed(self):
         with allure.step(f'{self.login_form.name} отображается'):

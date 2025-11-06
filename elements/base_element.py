@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, expect, Locator
+from playwright.sync_api import Page, Locator
 
 
 class BaseElement:
@@ -11,14 +11,25 @@ class BaseElement:
     def find_element(self) -> Locator:
         return self.page.locator(self.selector)
 
+    # def find_elements(self):
+    #     return self.page.locator(self.selector).element_handles()
+
+    def find_elements(self):
+        return self.page.locator(self.selector).all()
+
     def click(self, element=None):
         element = element if element else self.find_element()
+        self.wait_for_visible(element)
         element.click()
 
     def is_visible(self, element=None):
         element = element if element else self.find_element()
 
         return element.is_visible()
+
+    def wait_for_visible(self, element=None):
+        element = element if element else self.find_element()
+        element.wait_for(timeout=30000, state='visible')
 
     # def get_element(self):
     #     try:
@@ -63,14 +74,15 @@ class BaseElement:
     #         "arguments[0].scrollIntoView({block: 'center', inline: 'nearest'});", element
     #     )
     #
-    # def move_to_element(self, element=None):
-    #     element = element if element else self.get_element()
-    #     self.action.move_to_element(element)
-    #     self.action.perform()
-    #
+    def move_to_element(self, element=None):
+        element = element if element else self.find_element()
+        self.wait_for_visible(element)
+        element.hover()
+
+
     def get_text_of_element(self, element=None):
         element = element if element else self.find_element()
-
+        self.wait_for_visible(element)
         return element.text_content().strip()
 
     # def is_visible(self, timeout=15, frequency=1, element=None):
