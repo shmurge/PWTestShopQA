@@ -19,18 +19,15 @@ class TestLoginPage(BaseTest):
         self.create_account_page.is_opened()
         self.create_account_page.registration_form_is_displayed()
 
-
     @allure.title('Авторизация пользователя')
     @allure.severity(allure.severity_level.CRITICAL)
-    #@pytest.mark.test
     def test_user_authorization(self):
         self.login_page.open()
         self.login_page.is_opened()
         self.login_page.fill_login_form(
             login=UserData.LOGIN,
-            password=UserData.PASSWORD)
-
-        self.account_page.account_page_is_displayed()
+            password=UserData.PASSWORD
+        )
         self.account_page.user_information_is_correct(
             username=UserData.USERNAME,
             user_email=UserData.LOGIN

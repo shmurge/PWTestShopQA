@@ -4,31 +4,39 @@ from playwright.sync_api import expect
 from elements.base_element import BaseElement
 from elements.button import Button
 from elements.input import Input
-from pages.base_page import BasePage
 from locators.locs_header_page import HeaderPageLocators
+from pages.base_page import BasePage
 
+from time import sleep
 
 class HeaderPage(BasePage):
 
     def __init__(self, page):
         super().__init__(page)
 
-        self.main_logo = BaseElement(page=self.page, name='Лого', selector=HeaderPageLocators.MAIN_LOGO)
-        self.cart_button = Button(page=self.page, name='Корзина', selector=HeaderPageLocators.LINK_CART)
+        self.main_logo = BaseElement(
+            page=self.page, name='Лого', selector=HeaderPageLocators.MAIN_LOGO
+        )
+        self.cart_button = Button(
+            page=self.page, name='Корзина', selector=HeaderPageLocators.LINK_CART
+        )
         self.counter_on_cart = BaseElement(
             page=self.page, name='Кол-во товаров в корзине', selector=HeaderPageLocators.COUNTER_ON_CART
         )
         self.main_search_button = Button(
             page=self.page, name='Главный поиск', selector=HeaderPageLocators.BUTTON_MAIN_SEARCH
         )
-        self.sign_in_button = Button(page=self.page, name='Войти', selector=HeaderPageLocators.LINK_SIGN_IN)
+        self.sign_in_button = Button(
+            page=self.page, name='Войти', selector=HeaderPageLocators.LINK_SIGN_IN
+        )
         self.username_in_header = BaseElement(
             page=self.page, name='Имя пользователя', selector=HeaderPageLocators.USERNAME
         )
         self.my_account_button = Button(
             page=self.page, name='Мой аккаунт', selector=HeaderPageLocators.MY_ACCOUNT_BUTTON
         )
-        self.logout_button = Button(page=self.page, name='Выйти', selector=HeaderPageLocators.LOGOUT_BUTTON)
+        self.logout_button = Button(
+            page=self.page, name='Выйти', selector=HeaderPageLocators.LOGOUT_BUTTON)
 
     def goto_main_page(self):
         with allure.step('Перейти на главную страницу'):
@@ -53,23 +61,22 @@ class HeaderPage(BasePage):
                 self.attach_screenshot(self.username_in_header.name)
             ).to_have_text(exp)
 
-    # def goto_my_account(self):
-    #     with allure.step('Перейти в аккаунт'):
-    #         self.username_in_header.move_to_element()
-    #         self.my_account_button.click()
-    #
-    # def logout(self):
-    #     with allure.step('Выход из аккаунта'):
-    #         self.username_in_header.move_to_element()
-    #         self.logout_button.click()
-    #
-    # def sign_in_button_is_displayed(self):
-    #     with allure.step(f'{self.sign_in_button.name} отображается'):
-    #         self.assert_data_equal_data(
-    #             act_res=self.sign_in_button.is_visible(),
-    #             exp_res=True,
-    #             message=f'{self.sign_in_button.name} не отображается'
-    #         )
+    def goto_my_account(self):
+        with allure.step('Перейти в аккаунт'):
+            self.username_in_header.move_to_element()
+            self.my_account_button.click()
+
+    def logout(self):
+        with allure.step('Выход из аккаунта'):
+            self.username_in_header.move_to_element()
+            self.logout_button.click()
+
+    def sign_in_button_is_displayed(self):
+        with allure.step(f'{self.sign_in_button.name} отображается'):
+            self.expect(
+                self.sign_in_button.find_element(),
+                self.attach_screenshot(self.sign_in_button.name)
+            ).to_be_visible(timeout=30000)
     #
     # def check_prods_quantity_in_header(self, exp: int):
     #     with allure.step('Проверить количество товаров в счетчике хэдера'):

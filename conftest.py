@@ -6,29 +6,15 @@ from dotenv import load_dotenv
 from playwright.sync_api import Page, BrowserContext
 
 from config.links import Links
-# from pages.account_page import AccountPage
+from pages.account_page import AccountPage
 from pages.header_page import HeaderPage
 from pages.login_page import LoginPage
 # from pages.main_page import MainPage
 # from pages.product_page import ProductPage
 
+from time import sleep
 
-# @pytest.fixture()
-# def pre_login(browser):
-#     load_dotenv()
-#
-#     page = LoginPage(browser)
-#     page.open()
-#     page.fill_login_form(
-#         login=os.getenv('LOGIN'),
-#         password=os.getenv('PASSWORD')
-#     )
-#     page = AccountPage(browser)
-#
-#     page.user_information_is_correct(
-#         username=os.getenv('USERNAME'),
-#         user_email=os.getenv('LOGIN')
-#     )
+
 
 
 @pytest.fixture()
@@ -37,6 +23,24 @@ def page(context: BrowserContext):
     page.set_viewport_size({'width': 1920, 'height': 1080})
 
     return page
+
+@pytest.fixture()
+def pre_login(page):
+    load_dotenv()
+
+    login_page = LoginPage(page)
+    login_page.open()
+    login_page.fill_login_form(
+        login=os.getenv('LOGIN'),
+        password=os.getenv('PASSWORD')
+    )
+
+    account_page = AccountPage(page)
+
+    account_page.user_information_is_correct(
+        username=os.getenv('USERNAME'),
+        user_email=os.getenv('LOGIN')
+    )
 
 # @pytest.fixture()
 # def pre_goto_prod_page(browser):

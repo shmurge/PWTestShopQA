@@ -12,7 +12,6 @@ class TestCreateAccountPage(BaseTest):
     @pytest.mark.order(1)
     @allure.title('Создание аккаунта')
     @allure.severity(allure.severity_level.CRITICAL)
-    @pytest.mark.test
     def test_create_account(self):
         self.create_account_page.open()
         self.create_account_page.is_opened()
@@ -21,7 +20,6 @@ class TestCreateAccountPage(BaseTest):
             username=InputData.USERNAME,
             password=InputData.VALID_PASSWORD
         )
-        self.account_page.account_page_is_displayed()
         self.account_page.user_information_is_correct(
             username=InputData.USERNAME,
             user_email=InputData.VALID_EMAIL

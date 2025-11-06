@@ -20,6 +20,8 @@ class InputData:
     VALID_EMAIL = fake.email()
     VALID_PASSWORD = fake.password(length=8, lower_case=True, upper_case=True, digits=True, special_chars=True)
     PRODUCTS_SEARCH_QUERY = ['Desk', 'Chair', 'Warranty', 'Drawer', 'Box', 'Cabinet', 'Three-Seat Sofa']
+    RANDOM_TEXT = fake.text(max_nb_chars=20)
+    INCORRECT_SEARCH_QUERY = 'This is incorrect searching query!'
 
 
 class InfoMessage:
