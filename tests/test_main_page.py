@@ -18,7 +18,7 @@ class TestMainPage(BaseTest):
         self.main_page.is_opened()
         self.main_page.check_placeholder_in_search_input(PlaceHolder.MAIN_PAGE_SEARCH_INPUT)
 
-    @pytest.mark.test
+    #@pytest.mark.test
     @allure.title('Выбор товара на главной странице')
     @allure.severity(allure.severity_level.CRITICAL)
     def test_select_product_on_main_page(self):

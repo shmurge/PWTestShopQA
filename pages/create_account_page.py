@@ -40,8 +40,10 @@ class CreateAccountPage(HeaderPage):
 
     def registration_form_is_displayed(self):
         with allure.step(f'{self.registration_form.name} отображается'):
-            assert self.registration_form.is_visible(), (f'{self.registration_form.name} не отображается!\n'
-                                                         f'Скриншот {self.attach_screenshot(self.registration_form.name)}')
+            self.expect.elt_to_be_visible(
+                element=self.registration_form.find_element(),
+                element_name=self.registration_form.name
+            )
 
     def fill_email(self, data, save_to_env=True):
         with allure.step(f'Заполнить {self.email_input.name}'):
@@ -89,19 +91,29 @@ class CreateAccountPage(HeaderPage):
             self.fill_password_confirm(password)
             self.click_sign_up()
 
-    def error_alert_is_displayed(self, exp):
+    def error_alert_is_displayed(self, exp_alert_text):
         with allure.step(f'{self.alert.name} отображается'):
-            self.expect(
-                self.alert.find_element(),
-                self.attach_screenshot(self.alert.name)
-            ).to_have_text(expected=exp, use_inner_text=True)
+            with allure.step(f'{self.alert.name} отображается'):
+                self.expect.elt_to_be_visible(
+                    element=self.alert.find_element(),
+                    element_name=self.alert.name
+                )
+            with allure.step(f'Текст в {self.alert.name} корректный'):
+                self.expect.elt_to_have_text(
+                    element=self.alert.find_element(),
+                    element_name=self.alert.name,
+                    exp_text=exp_alert_text
+                )
 
     def check_placeholders_in_registration_form(self, exp):
         with allure.step(f'Проверить плэйсхолдер в {self.username_input.name}'):
-            self.expect(
-                self.username_input.find_element(),
-                self.attach_screenshot(self.username_input.name)
-            ).to_have_attribute(name='placeholder', value=exp)
+            self.expect.elt_to_have_attribute(
+                element=self.username_input.find_element(),
+                element_name=self.username_input.name,
+                assert_message=f'Некорректный плейсхолдер в {self.username_input.name}!',
+                exp_attr_name='placeholder',
+                exp_attr_value=exp
+            )
 
     @staticmethod
     def set_env_key(key, value):

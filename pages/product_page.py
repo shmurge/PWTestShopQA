@@ -119,15 +119,16 @@ class ProductPage(BasePage):
 
     def check_title_and_price_in_prod_page(self, exp_title, exp_price):
         with allure.step('Проверить наименование и стоимость товара на странице товара'):
-            self.expect(
-                self.product_title_on_page.find_element(),
-                self.attach_screenshot(self.product_title_on_page.name)
-            ).to_have_text(exp_title)
-
-            self.expect(
-                self.product_price_on_page.find_element(),
-                self.attach_screenshot(self.product_price_on_page.name)
-            ).to_have_text(exp_price)
+            self.expect.elt_to_have_text(
+                element=self.product_title_on_page.find_element(),
+                element_name=self.product_title_on_page.name,
+                exp_text=exp_title
+            )
+            self.expect.elt_to_have_text(
+                element=self.product_price_on_page.find_element(),
+                element_name=self.product_price_on_page.name,
+                exp_text=exp_price
+            )
 
     def check_product_description_on_page(self, exp):
         with allure.step(f'Проверить {self.product_description.name}'):

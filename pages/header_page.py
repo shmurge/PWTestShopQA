@@ -1,5 +1,4 @@
 import allure
-from playwright.sync_api import expect
 
 from elements.base_element import BaseElement
 from elements.button import Button
@@ -56,10 +55,11 @@ class HeaderPage(BasePage):
 
     def username_is_correct(self, exp):
         with allure.step(f'{self.username_in_header.name} в хэдере корректное'):
-            expect(
-                self.username_in_header.find_element(),
-                self.attach_screenshot(self.username_in_header.name)
-            ).to_have_text(exp)
+            self.expect.elt_to_have_text(
+                element=self.username_in_header.find_element(),
+                element_name=self.username_in_header.name,
+                exp_text=exp
+            )
 
     def goto_my_account(self):
         with allure.step('Перейти в аккаунт'):
@@ -73,10 +73,11 @@ class HeaderPage(BasePage):
 
     def sign_in_button_is_displayed(self):
         with allure.step(f'{self.sign_in_button.name} отображается'):
-            self.expect(
-                self.sign_in_button.find_element(),
-                self.attach_screenshot(self.sign_in_button.name)
-            ).to_be_visible(timeout=30000)
+            self.expect.elt_to_be_visible(
+                element=self.sign_in_button.find_element(),
+                element_name=self.sign_in_button.name
+            )
+
     #
     # def check_prods_quantity_in_header(self, exp: int):
     #     with allure.step('Проверить количество товаров в счетчике хэдера'):

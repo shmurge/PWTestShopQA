@@ -46,10 +46,10 @@ class CartPage(HeaderPage):
 
     def order_overview_is_displayed(self):
         with allure.step(f'{self.order_overview.name} отображается'):
-            self.expect(
-                self.order_overview.find_element(),
-                self.attach_screenshot(self.order_overview.name)
-            ).to_be_visible(timeout=30000)
+            self.expect.elt_to_be_visible(
+                element=self.order_overview.find_element(),
+                element_name=self.order_overview.name
+            )
 
     def should_be_message_if_cart_is_empty(self):
         with allure.step(f'Отображается сообщение {self.empty_cart_message.name}'):
