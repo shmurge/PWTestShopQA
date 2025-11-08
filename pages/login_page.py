@@ -34,9 +34,9 @@ class LoginPage(HeaderPage):
 
     def login_form_is_displayed(self):
         with allure.step(f'{self.login_form.name} отображается'):
-            self.expect(
-                self.login_form.find_element(),
-                self.attach_screenshot(self.login_form.name)
+            self.expect.elt_to_be_visible(
+                element=self.login_form.find_element(),
+                element_name=self.login_form.name
             )
 
     def go_to_create_account_page(self):
@@ -63,23 +63,30 @@ class LoginPage(HeaderPage):
 
     def should_be_correct_placeholders_in_login_form(self, exp_email_placeholder, exp_password_placeholder):
         with allure.step(f'Проверить плэйсхолдеры в {self.login_form.name}'):
-            self.expect(
-                self.email_input.find_element(),
-                self.attach_screenshot(self.email_input.name)
-            ).to_have_attribute(
-                name='placeholder',
-                value=exp_email_placeholder
+            self.expect.elt_to_have_attribute(
+                element=self.email_input.find_element(),
+                element_name=self.email_input.name,
+                assert_message=f'Некорректный плейсхолдер в {self.email_input.name}!',
+                exp_attr_name='placeholder',
+                exp_attr_value=exp_email_placeholder
             )
-            self.expect(
-                self.password_input.find_element(),
-                self.attach_screenshot(self.password_input.name)
-            ).to_have_attribute(
-                name='placeholder',
-                value=exp_password_placeholder)
+            self.expect.elt_to_have_attribute(
+                element=self.password_input.find_element(),
+                element_name=self.password_input.name,
+                assert_message=f'Некорректный плейсхолдер в {self.password_input.name}!',
+                exp_attr_name='placeholder',
+                exp_attr_value=exp_password_placeholder
+            )
 
-    def error_alert_is_displayed(self, exp_alert):
+    def error_alert_is_displayed(self, exp_alert_text):
         with allure.step(f'{self.alert.name} отображается'):
-            self.expect(
-                self.alert.find_element(),
-                self.attach_screenshot(self.alert.name)
-            ).to_have_text(expected=exp_alert)
+            self.expect.elt_to_be_visible(
+                element=self.alert.find_element(),
+                element_name=self.alert.name
+            )
+        with allure.step(f'Текст в {self.alert.name} корректный'):
+            self.expect.elt_to_have_text(
+                element=self.alert.find_element(),
+                element_name=self.alert.name,
+                exp_text=exp_alert_text
+            )

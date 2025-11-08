@@ -10,20 +10,16 @@ class Input(BaseElement):
 
     def clear_input(self, element=None):
         element = element if element else self.find_element()
-        self.wait_for_visible(element)
         element.clear()
-
 
     def fill_input(self, data, element=None):
         element = element if element else self.find_element()
-        self.wait_for_visible(element)
         element.fill(data)
 
         return data
 
     def fill_autocomplete_input(self, data, element=None):
         element = element if element else self.find_element()
-        self.wait_for_visible(element)
         element.fill(data)
         element.press('Enter')
 

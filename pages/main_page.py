@@ -1,7 +1,6 @@
 import random
 
 import allure
-from playwright.sync_api import Locator
 
 from config.links import Links
 from data_for_tests.data_for_tests import InfoMessage
@@ -33,19 +32,15 @@ class MainPage(HeaderPage):
         self.product_price = Button(
             page=self.page, name='Цена товара', selector=MainPageLocators.PRODUCT_PRICE)
 
-    def main_page_is_displayed(self):
-        with allure.step('Отображается главная страница'):
-            self.expect(
-                self.search_input.find_element(),
-                self.attach_screenshot(self.search_input.name)
-            ).to_be_visible()
-
     def check_placeholder_in_search_input(self, exp):
         with allure.step(f'Проверить плэйсхолдер в {self.search_input.name}'):
-            self.expect(
-                self.search_input.find_element(),
-                self.attach_screenshot(self.search_input.name)
-            ).to_have_attribute(name='placeholder', value=exp)
+            self.expect.elt_to_have_attribute(
+                element=self.search_input.find_element(),
+                element_name=self.search_input.name,
+                assert_message=f'Некорректный плейсхолдер в {self.search_input.name}!',
+                exp_attr_name='placeholder',
+                exp_attr_value=exp
+            )
 
     def select_random_product(self):
         titles = self.product_title.find_elements()
@@ -82,7 +77,7 @@ class MainPage(HeaderPage):
             titles = [t.text_content() for t in self.product_title.find_elements()]
 
             for title in titles:
-                self.assert_data_in_data(
+                self.expect.assert_data_in_data(
                     act_res=keyword.lower(),
                     exp_res=title.lower(),
                     message=f'Найденный товар {title} не содержит {keyword} в наименовании'
@@ -96,7 +91,7 @@ class MainPage(HeaderPage):
             space_index = cnt_res.find(' ')
             res_count = int(cnt_res[parenthesis_index:space_index])
 
-            self.assert_data_equal_data(
+            self.expect.assert_data_equal_data(
                 act_res=len(titles),
                 exp_res=res_count,
                 message='Некорректый результат в счетчике найденных товаров'
@@ -105,16 +100,12 @@ class MainPage(HeaderPage):
     def check_message_with_no_results(self, query):
         with allure.step('Отображается попап с отсутствием результатов поиска'):
             exp = InfoMessage().message_no_results(query)
-            try:
-                self.expect(
-                    self.message_no_searching_results.find_element(),
-                    message='Нет модалки с алертом'
-                ).to_be_visible()
-
-                self.expect(
-                    self.message_no_searching_results.find_element(),
-                    message='Модалка с алертом содержит некорректный текст'
-                ).to_have_text(expected=exp)
-            except AssertionError:
-                self.attach_screenshot(self.message_no_searching_results.name)
-                raise
+            self.expect.elt_to_be_visible(
+                element=self.message_no_searching_results.find_element(),
+                element_name=self.message_no_searching_results.name
+            )
+            self.expect.elt_to_have_text(
+                element=self.message_no_searching_results.find_element(),
+                element_name=self.message_no_searching_results.name,
+                exp_text=exp
+            )

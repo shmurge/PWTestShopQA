@@ -7,6 +7,7 @@ class BaseElement:
         self.page = page
         self.name = name
         self.selector = selector
+        self.timeout = 30000
 
     def find_element(self) -> Locator:
         return self.page.locator(self.selector)
@@ -19,17 +20,20 @@ class BaseElement:
 
     def click(self, element=None):
         element = element if element else self.find_element()
-        self.wait_for_visible(element)
         element.click()
 
     def is_visible(self, element=None):
         element = element if element else self.find_element()
+        try:
+            element.is_visible(timeout=self.timeout)
+        except TimeoutError:
+            return False
 
-        return element.is_visible()
+        return True
 
     def wait_for_visible(self, element=None):
         element = element if element else self.find_element()
-        element.wait_for(timeout=30000, state='visible')
+        element.wait_for(timeout=self.timeout, state='visible')
 
     # def get_element(self):
     #     try:
@@ -76,13 +80,10 @@ class BaseElement:
     #
     def move_to_element(self, element=None):
         element = element if element else self.find_element()
-        self.wait_for_visible(element)
         element.hover()
-
 
     def get_text_of_element(self, element=None):
         element = element if element else self.find_element()
-        self.wait_for_visible(element)
         return element.text_content().strip()
 
     # def is_visible(self, timeout=15, frequency=1, element=None):
