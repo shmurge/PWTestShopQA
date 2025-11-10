@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, Locator
+from playwright.sync_api import Page, Locator, TimeoutError
 
 
 class BaseElement:
@@ -22,18 +22,32 @@ class BaseElement:
         element = element if element else self.find_element()
         element.click()
 
-    def is_visible(self, element=None):
+    def is_visible(self, element=None, timeout=None):
         element = element if element else self.find_element()
+        timeout = timeout if timeout else self.timeout
         try:
-            element.is_visible(timeout=self.timeout)
+            element.wait_for(state='visible', timeout=timeout)
         except TimeoutError:
             return False
 
         return True
 
-    def wait_for_visible(self, element=None):
+    def wait_for_visible(self, element=None, multiple=False):
         element = element if element else self.find_element()
+        if multiple:
+            cnt = element.count()
+            for i in range(cnt):
+                element.nth(i).wait_for(timeout=self.timeout, state='visible')
         element.wait_for(timeout=self.timeout, state='visible')
+
+    def wait_for_hidden(self, element=None, multiple=False):
+        element = element if element else self.find_element()
+        if multiple:
+            cnt = element.count()
+            for i in range(cnt):
+                element.nth(i).wait_for(timeout=self.timeout, state='hidden')
+        element.wait_for(timeout=self.timeout, state='hidden')
+
 
     # def get_element(self):
     #     try:
@@ -84,7 +98,14 @@ class BaseElement:
 
     def get_text_of_element(self, element=None):
         element = element if element else self.find_element()
-        return element.text_content().strip()
+        text = element.text_content().strip()
+        text = text.replace('\u00A0', ' ')
+        return text
+
+
+    # def get_text_of_element(self, element=None):
+    #     element = element if element else self.find_element()
+    #     return element.inner_text().strip()
 
     # def is_visible(self, timeout=15, frequency=1, element=None):
     #     element = element if element else self.locator
@@ -123,7 +144,7 @@ class BaseElement:
     #
     #     return element.is_selected()
     #
-    # def get_attribute(self, attribute, element=None):
-    #     element = element if element else self.get_element()
-    #
-    #     return element.get_attribute(attribute)
+    def get_attribute(self, attribute, element=None):
+        element = element if element else self.find_element()
+
+        return element.get_attribute(name=attribute, timeout=self.timeout)

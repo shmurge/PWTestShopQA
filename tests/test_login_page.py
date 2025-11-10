@@ -6,7 +6,7 @@ from data_for_tests.data_for_tests import PlaceHolder, UserData, ErrorMessage
 
 from time import sleep
 
-@pytest.mark.test
+
 @pytest.mark.order(1)
 @allure.suite('Страница логина')
 class TestLoginPage(BaseTest):

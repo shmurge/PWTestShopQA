@@ -20,3 +20,6 @@ class BasePage:
             self.expect.page_to_have_url(
                 exp_url=self.PAGE_URL
             )
+
+    def wait_loading_page(self):
+        self.page.wait_for_load_state(state='networkidle')

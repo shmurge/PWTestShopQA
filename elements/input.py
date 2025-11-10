@@ -24,3 +24,8 @@ class Input(BaseElement):
         element.press('Enter')
 
         return data
+
+    def get_input_value(self, element=None):
+        element = element if element else self.find_element()
+
+        return element.input_value()
