@@ -12,13 +12,31 @@ class ExpectsAndAsserts:
     def elt_to_be_visible(
             self,
             element,
-            element_name
+            element_name,
+            timeout=None
     ):
+        timeout = timeout if timeout else self.timeout
         try:
             expect(
                 actual=element,
                 message=f'{element_name} не отображается!'
-            ).to_be_visible(timeout=self.timeout)
+            ).to_be_visible(timeout=timeout)
+        except AssertionError:
+            self.utils.attach_screenshot(element_name)
+            raise
+
+    def elt_to_be_hidden(
+            self,
+            element,
+            element_name,
+            timeout=None
+    ):
+        timeout = timeout if timeout else self.timeout
+        try:
+            expect(
+                actual=element,
+                message=f'{element_name} не должен отображаться!'
+            ).to_be_hidden(timeout=timeout)
         except AssertionError:
             self.utils.attach_screenshot(element_name)
             raise
@@ -66,6 +84,21 @@ class ExpectsAndAsserts:
             ).to_have_url(url_or_reg_exp=exp_url, timeout=self.timeout)
         except AssertionError:
             self.utils.attach_screenshot(screenshot_name='Page url')
+            raise
+
+    def input_to_have_value(
+            self,
+            element,
+            element_name,
+            exp_value
+    ):
+        try:
+            expect(
+                actual=element,
+                message=f'Некорректное значение в {element_name}!'
+            ).to_have_value(value=exp_value)
+        except AssertionError:
+            self.utils.attach_screenshot(element_name)
             raise
 
     def assert_data_equal_data(self, act_res, exp_res, message):

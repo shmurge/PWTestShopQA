@@ -78,13 +78,19 @@ class HeaderPage(BasePage):
                 element_name=self.sign_in_button.name
             )
 
-    #
-    # def check_prods_quantity_in_header(self, exp: int):
-    #     with allure.step('Проверить количество товаров в счетчике хэдера'):
-    #         act = int(self.counter_on_cart.get_text_of_element())
-    #
-    #         assert self.wait.until(
-    #             self.ec.text_to_be_present_in_element(self.counter_on_cart.locator, str(exp))
-    #         ), (f'Некорректное количество товаров в счетчике хэдера\n'
-    #             f'ОР: {exp}\n'
-    #             f'ФР: {act}')
+
+    def check_prods_quantity_in_header(self, exp):
+        with allure.step('Проверить количество товаров в счетчике хэдера'):
+            self.expect.elt_to_have_text(
+                element=self.counter_on_cart.find_element(),
+                element_name=self.counter_on_cart.name,
+                exp_text=str(exp)
+            )
+
+            #act = int(self.counter_on_cart.get_text_of_element())
+
+            # assert self.wait.until(
+            #     self.ec.text_to_be_present_in_element(self.counter_on_cart.locator, str(exp))
+            # ), (f'Некорректное количество товаров в счетчике хэдера\n'
+            #     f'ОР: {exp}\n'
+            #     f'ФР: {act}')

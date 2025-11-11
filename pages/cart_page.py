@@ -63,9 +63,10 @@ class CartPage(HeaderPage):
 
     def check_prod_title_price_and_quantity(self, exp_title, exp_price, exp_quantity: int, full_match=False):
         with allure.step('Проверить наличие товаров в корзине'):
-            titles = [t.text for t in self.product_title.get_elements()]
-            prices = [p.text for p in self.product_price.get_elements()]
-            quantities = [int(q.get_attribute('value')) for q in self.units_quantity_input.get_elements()]
+            titles = [t.inner_text() for t in self.product_title.find_elements()]
+            # почему-то во всех строках со стоимостью есть неразрывные пробелы
+            prices = [p.inner_text().replace('\u00A0', ' ') for p in self.product_price.find_elements()]
+            quantities = [int(q.get_attribute('value')) for q in self.units_quantity_input.find_elements()]
 
             self.product_is_on_order_overview(exp_title, titles, full_match)
 
@@ -79,7 +80,7 @@ class CartPage(HeaderPage):
         f = False
 
         if full_match:
-            self.assert_data_in_data(
+            self.expect.assert_data_in_data(
                 act_res=prod_title,
                 exp_res=prods_list,
                 message=f'Товар {prod_title} не найден в корзине'
@@ -90,7 +91,7 @@ class CartPage(HeaderPage):
                     f = True
                     break
 
-            self.assert_data_equal_data(
+            self.expect.assert_data_equal_data(
                 act_res=f,
                 exp_res=True,
                 message=f'Товар {prod_title} не найден в корзине'
@@ -140,7 +141,7 @@ class CartPage(HeaderPage):
 
     def check_product_quantity(self, act_quan, exp_quan):
         with allure.step('Проверить количество единиц товара'):
-            self.assert_data_equal_data(
+            self.expect.assert_data_equal_data(
                 act_res=act_quan,
                 exp_res=exp_quan,
                 message='Некорректное количество единиц товара'
@@ -148,7 +149,7 @@ class CartPage(HeaderPage):
 
     def check_product_price(self, act_price, exp_price):
         with allure.step('Проверить стоимость товара'):
-            self.assert_data_equal_data(
+            self.expect.assert_data_equal_data(
                 act_res=act_price,
                 exp_res=exp_price,
                 message='Некорректная стоимость товара'

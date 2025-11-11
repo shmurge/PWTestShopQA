@@ -59,6 +59,10 @@ class ProductPage(BasePage):
             page=self.page, name='Удалить одну единицу товара на странице',
             selector=ProductPageLocators.REMOVE_ONE_BUTTON
         )
+        self.loader_in_button = BaseElement(
+            page=self.page, name='Лоудер в кнопке увеличения/уменьшения кол-ва',
+            selector=ProductPageLocators.LOADER_IN_ADD_QUAN_BUTTON
+        )
         self.units_quantity_input = Input(
             page=self.page, name='Счетчик единиц товара на странице', selector=ProductPageLocators.QUANTITY_INPUT
         )
@@ -70,6 +74,15 @@ class ProductPage(BasePage):
         )
         self.desk_steel_white_photo = BaseElement(
             page=self.page, name='Стол: сталь/белый', selector=ProductPageLocators.CUSTOMIZE_DESK_PHOTO_STEEL_WHITE
+        )
+        self.desk_custom_white_photo = BaseElement(
+            page=self.page, name='Стол: сталь/белый', selector=ProductPageLocators.CUSTOMIZE_DESK_PHOTO_CUSTOM_WHITE
+        )
+        self.desk_custom_black_photo = BaseElement(
+            page=self.page, name='Стол: сталь/белый', selector=ProductPageLocators.CUSTOMIZE_DESK_PHOTO_CUSTOM_BLACK
+        )
+        self.product_photo = BaseElement(
+            page=self.page, name='Фото товара на странице', selector=ProductPageLocators.PRODUCT_PHOTO
         )
         self.product_photos_in_modal = BaseElement(
             page=self.page, name='Фото товаров в модалке', selector=ModalAddToCartLocators.PRODUCT_PHOTOS_IN_MODAL
@@ -86,9 +99,10 @@ class ProductPage(BasePage):
 
     def add_prod_to_cart_and_continue_shopping(self):
         with allure.step('Добавить товар в корзину'):
+            self.product_photo.wait_for_visible()
             self.add_to_cart_button.click()
-            if self.add_to_cart_modal.is_visible(timeout=2, frequency=0.5):
-                self.wait.until(self.ec.visibility_of_all_elements_located(self.product_photos_in_modal.locator))
+            if self.add_to_cart_modal.is_visible(timeout=2000):
+                self.continue_shopping_button.move_to_element()
                 self.continue_shopping_button.click()
 
     def add_multiple_prod_to_cart(self, quantity=3):
@@ -103,18 +117,25 @@ class ProductPage(BasePage):
 
     def add_to_cart_modal_is_displayed(self):
         with allure.step(f'Отображается {self.add_to_cart_modal.name}'):
-            self.add_to_cart_modal.is_visible(), (f'Не отображается {self.add_to_cart_modal.name}\n'
-                                                  f'Скриншот {self.attach_screenshot(self.add_to_cart_modal.name)}')
+            self.expect.elt_to_be_visible(
+                element=self.add_to_cart_modal.find_element(),
+                element_name=self.add_to_cart_modal.name
+            )
 
     def add_multiple_units_of_prod(self, quantity=1):
         with allure.step('Добавить несколько единиц одного товара'):
+            self.product_photo.wait_for_visible()
             count = 1
 
             for _ in range(quantity):
                 self.add_one_unit_button.click()
+                self.loader_in_button.wait_for_hidden()
                 count += 1
-                self.wait.until(self.ec.text_to_be_present_in_element_attribute(
-                    self.units_quantity_input.locator, 'value', str(count))
+
+                self.expect.input_to_have_value(
+                    element=self.units_quantity_input.find_element(),
+                    element_name=self.units_quantity_input.name,
+                    exp_value=str(count)
                 )
 
     def check_title_and_price_in_prod_page(self, exp_title, exp_price):
@@ -132,45 +153,50 @@ class ProductPage(BasePage):
 
     def check_product_description_on_page(self, exp):
         with allure.step(f'Проверить {self.product_description.name}'):
-            act = self.product_description.get_text_of_element()
-
-            self.assert_data_equal_data(
-                act_res=act,
-                exp_res=exp,
-                message=f'Некорректное {self.product_description.name}'
+            self.expect.elt_to_have_text(
+                element=self.product_description.find_element(),
+                element_name=self.product_description.name,
+                exp_text=exp
             )
 
-    def choose_color_on_page(self, color: str):
+    def choose_color_on_page(self, material: str, color: str):
         with allure.step(f'Выбрать цвет: {color}'):
-            self.desk_alum_white_photo.is_present()
-            if color.lower() == 'black':
+            self.wait_loading_page()
+            if material.lower() == 'steel' and color.lower() == 'black':
                 self.black_color_button.click()
-                self.desk_steel_black_photo.is_visible()
-            else:
+                self.desk_steel_black_photo.wait_for_visible()
+            elif material.lower() == 'steel' and color.lower() == 'white':
                 self.white_color_button.click()
-                self.desk_steel_white_photo.is_visible()
+                self.desk_steel_white_photo.wait_for_visible()
+            elif material.lower() == 'aluminium':
+                self.desk_alum_white_photo.wait_for_visible()
+            elif material.lower() == 'custom' and color.lower() == 'black':
+                self.black_color_button.click()
+                self.desk_custom_black_photo.wait_for_visible()
+            elif material.lower() == 'custom' and color.lower() == 'white':
+                self.white_color_button.click()
+                self.desk_custom_white_photo.wait_for_visible()
 
     def choose_material_on_page(self, material: str):
         with allure.step(f'Выбрать материал: {material}'):
-            self.desk_alum_white_photo.is_present()
+            self.wait_loading_page()
             if material == 'aluminium':
                 self.material_alum_button.click()
-                self.desk_alum_white_photo.is_visible()
+                self.desk_alum_white_photo.wait_for_visible()
             elif material == 'custom':
                 self.material_custom_button.click()
-                self.input_custom.is_visible()
+                self.input_custom.wait_for_visible()
             else:
                 self.material_steel_button.click()
-                self.desk_steel_white_photo.is_visible()
+                self.desk_steel_white_photo.wait_for_visible()
 
     def open_modal_add_to_cart(self):
         with allure.step(f'Открыть {self.add_to_cart_modal.name}'):
             self.add_to_cart_button.click()
         with allure.step(f'Отображается {self.add_to_cart_modal.name}'):
-            self.assert_data_equal_data(
-                act_res=self.add_to_cart_modal.is_visible(),
-                exp_res=True,
-                message=f'{self.add_to_cart_modal.name} не отображается'
+            self.expect.elt_to_be_visible(
+                element=self.add_to_cart_modal.find_element(),
+                element_name=self.add_to_cart_modal.name
             )
 
     def click_on_continue_shopping(self):
@@ -186,7 +212,7 @@ class ProductPage(BasePage):
 
     def get_primary_info_about_product_on_product_page(self, cost_calculation=True):
         with allure.step('Получить основную информацию о товаре'):
-            title = self.get_prod_title_on_page()
+            title = self.product_title_on_page.get_text_of_element()
             price = self.get_prod_price_on_page(cost_calculation=cost_calculation)
             quantity = self.get_prod_units_quantity_on_product_page()
 
@@ -206,7 +232,7 @@ class ProductPage(BasePage):
         return price
 
     def get_prod_units_quantity_on_product_page(self):
-        return int(self.units_quantity_input.get_attribute('value'))
+        return int(self.units_quantity_input.get_input_value())
 
     def get_prod_description(self):
         return self.product_description.get_text_of_element()
@@ -222,14 +248,14 @@ class ProductPage(BasePage):
     @staticmethod
     def parse_price_to_num(value: str):
         # Форматирует строку вида $ x,xxx,xxx.xx в число
-        index = value.find(' ') + 1
+        index = value.find('') + 1
         num_value = float(value.replace(',', '')[index:])
 
         return num_value
 
     def select_product_material(self):
-        if self.radio_button_material.is_visible(timeout=2, frequency=0.5):
-            buttons = self.radio_button_material.get_elements()
+        if self.radio_button_material.is_visible(timeout=2000):
+            buttons = self.radio_button_material.find_elements()
             b = random.choice(buttons)
             self.radio_button_material.click(b)
             value = self.radio_button_material.get_attribute(attribute='data-value_name', element=b)
@@ -239,8 +265,8 @@ class ProductPage(BasePage):
         return None
 
     def select_product_color(self):
-        if self.radio_button_material.is_visible(timeout=2, frequency=0.5):
-            buttons = self.radio_button_color.get_elements()
+        if self.radio_button_material.is_visible(timeout=2000):
+            buttons = self.radio_button_color.find_elements()
             b = random.choice(buttons)
             self.radio_button_material.click(b)
             value = self.radio_button_material.get_attribute(attribute='data-value_name', element=b)

@@ -6,7 +6,7 @@ from pages.create_account_page import CreateAccountPage
 from pages.header_page import HeaderPage
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
-# from pages.modal_add_to_cart import ModalAddToCart
+from pages.modal_add_to_cart import ModalAddToCart
 from pages.product_page import ProductPage
 
 
@@ -17,7 +17,7 @@ class BaseTest:
     header_page = HeaderPage
     login_page = LoginPage
     main_page = MainPage
-    # modal_add_to_cart = ModalAddToCart
+    modal_add_to_cart = ModalAddToCart
     product_page = ProductPage
 
     @pytest.fixture(autouse=True)
@@ -30,5 +30,5 @@ class BaseTest:
         request.cls.header_page = HeaderPage(page)
         request.cls.login_page = LoginPage(page)
         request.cls.main_page = MainPage(page)
-        # request.cls.modal_add_to_cart = ModalAddToCart(browser)
+        request.cls.modal_add_to_cart = ModalAddToCart(page)
         request.cls.product_page = ProductPage(page)
