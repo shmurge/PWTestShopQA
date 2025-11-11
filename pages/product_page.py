@@ -1,4 +1,3 @@
-from asyncio import timeout
 from decimal import Decimal, ROUND_HALF_UP
 
 import allure
