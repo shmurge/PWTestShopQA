@@ -74,22 +74,13 @@ class ModalAddToCart(BasePage):
                     element_name=self.product_title_on_modal.name,
                     exp_text=exp
                 )
-                # self.assert_data_equal_data(
-                #     act_res=title_in_modal,
-                #     exp_res=exp,
-                #     message=f'Некорректное {self.product_title_on_modal.name}'
-                # )
+
             else:
                 self.expect.elt_to_have_text(
                     element=self.product_title_on_modal.find_element(),
                     element_name=self.product_title_on_modal.name,
                     exp_text=re.compile(exp)
                 )
-                # self.assert_data_in_data(
-                #     act_res=exp,
-                #     exp_res=title_in_modal,
-                #     message=f'{self.product_title_on_modal} не содержит {exp}'
-                # )
 
     def check_product_price(self, exp):
         with allure.step(f'Проверить {self.product_price_on_modal.name}'):
@@ -98,13 +89,6 @@ class ModalAddToCart(BasePage):
                 element_name=self.product_price_on_modal.name,
                 exp_text=exp
             )
-            # act = self.product_price_on_modal.get_text_of_element()
-            #
-            # self.assert_data_equal_data(
-            #     act_res=act,
-            #     exp_res=exp,
-            #     message=f'Некорректная {self.product_price_on_modal.name}'
-            # )
 
     def check_product_units_quantity(self, exp):
         with allure.step('Проверить количество единиц товара'):
@@ -113,20 +97,6 @@ class ModalAddToCart(BasePage):
                 element_name=self.units_quantity_input.name,
                 exp_value=str(exp)
             )
-            # self.expect.elt_to_have_attribute(
-            #     element=self.units_quantity_input.find_element(),
-            #     element_name=self.units_quantity_input.name,
-            #     assert_message=f'Некорректное значение в {self.units_quantity_input.name}!',
-            #     exp_attr_name='value',
-            #     exp_attr_value=str(exp)
-            #)
-            # act = self.get_prod_units_quantity_on_modal()
-
-            # self.assert_data_equal_data(
-            #     act_res=act,
-            #     exp_res=exp,
-            #     message='Некорректное количество единиц товара'
-            # )
 
     def check_product_total_price(self, exp):
         with allure.step(f'Проверить {self.product_total_price_on_modal.name}'):
@@ -135,13 +105,3 @@ class ModalAddToCart(BasePage):
                 element_name=self.product_total_price_on_modal.name,
                 exp_text=exp
             )
-            # act = self.product_total_price_on_modal.get_text_of_element()
-            #
-            # self.assert_data_equal_data(
-            #     act_res=act,
-            #     exp_res=exp,
-            #     message=f'Некорректная {self.product_total_price_on_modal.name}'
-            # )
-
-    # def get_prod_units_quantity_on_modal(self):
-    #     return int(self.units_quantity_input.get_attribute('value'))

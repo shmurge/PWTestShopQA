@@ -53,19 +53,21 @@ class CartPage(HeaderPage):
 
     def should_be_message_if_cart_is_empty(self):
         with allure.step(f'Отображается сообщение {self.empty_cart_message.name}'):
-            act = self.empty_cart_message.get_text_of_element()
+            self.expect.elt_to_be_visible(
+                element=self.empty_cart_message.find_element(),
+                element_name=self.empty_cart_message.name
+            )
 
-            self.assert_data_equal_data(
-                act_res=act,
-                exp_res=InfoMessage.CART_IS_EMPTY,
-                message=f'{self.empty_cart_message.name} не отображается'
+            self.expect.elt_to_have_text(
+                element=self.empty_cart_message.find_element(),
+                element_name=self.empty_cart_message.name,
+                exp_text=InfoMessage.CART_IS_EMPTY
             )
 
     def check_prod_title_price_and_quantity(self, exp_title, exp_price, exp_quantity: int, full_match=False):
         with allure.step('Проверить наличие товаров в корзине'):
-            titles = [t.inner_text() for t in self.product_title.find_elements()]
-            # почему-то во всех строках со стоимостью есть неразрывные пробелы
-            prices = [p.inner_text().replace('\u00A0', ' ') for p in self.product_price.find_elements()]
+            titles = self.product_title.get_inner_text_list()
+            prices = self.product_price.get_inner_text_list()
             quantities = [int(q.get_attribute('value')) for q in self.units_quantity_input.find_elements()]
 
             self.product_is_on_order_overview(exp_title, titles, full_match)
@@ -100,15 +102,15 @@ class CartPage(HeaderPage):
     def product_should_not_be_on_order_overview(self, prod_title):
         with allure.step(f'Товар {prod_title} отсутствует в корзине после удаления'):
             f = True
-            self.order_overview.is_present()
-            titles = [t.text for t in self.product_title.get_elements()]
+            self.order_overview.wait_for_visible()
+            titles = self.product_title.get_inner_text_list()
 
             for t in titles:
                 if prod_title in t:
                     f = False
                     break
 
-            self.assert_data_equal_data(
+            self.expect.assert_data_equal_data(
                 act_res=f,
                 exp_res=True,
                 message=f'Товар {prod_title} отображется в корзине после удаления'
@@ -116,26 +118,25 @@ class CartPage(HeaderPage):
 
     def remove_product_from_cart(self, prod_title: str):
         with allure.step(f'Удалить товар {prod_title} из корзины'):
-            titles = [t.text for t in self.product_title.get_elements()]
-            remove_buttons = self.delete_product_button.get_elements()
+            titles = self.product_title.get_inner_text_list()
+            remove_buttons = self.delete_product_button.find_elements()
 
             for i in range(len(titles)):
                 if prod_title in titles[i]:
-                    self.delete_product_button.scroll_to_element(remove_buttons[i])
+                    self.delete_product_button.move_to_element(remove_buttons[i])
                     remove_buttons[i].click()
-                    self.wait.until(self.ec.invisibility_of_element_located(remove_buttons[i]))
 
     def remove_random_product_from_cart(self):
         with allure.step(f'Удалить рандомный товар из корзины'):
-            titles = [t.text for t in self.product_title.get_elements()]
-            remove_buttons = self.delete_product_button.get_elements()
+            titles = self.product_title.get_inner_text_list()
+            remove_buttons = self.delete_product_button.find_elements()
             prod_title = random.choice(titles)
 
             for i in range(len(titles)):
                 if prod_title in titles[i]:
-                    self.delete_product_button.scroll_to_element(remove_buttons[i])
+                    self.delete_product_button.move_to_element(remove_buttons[i])
                     remove_buttons[i].click()
-                    self.wait.until(self.ec.invisibility_of_element_located(remove_buttons[i]))
+                    self.delete_product_button.wait_for_hidden(element=remove_buttons[i])
 
             return prod_title
 
@@ -157,13 +158,10 @@ class CartPage(HeaderPage):
 
     def check_subtotal_price(self):
         with allure.step(f'Проверить {self.subtotal_price.name}'):
-            act = self.get_subtotal_price()
-            exp = self.subtotal_price.get_text_of_element()
-
-            self.assert_data_equal_data(
-                act_res=act,
-                exp_res=exp,
-                message=f'Некорректная {self.subtotal_price.name}'
+            self.expect.elt_to_have_text(
+                element=self.subtotal_price.find_element(),
+                element_name=self.subtotal_price.name,
+                exp_text=self.get_subtotal_price()
             )
 
     def tax_should_be_15_percent(self):
@@ -172,7 +170,7 @@ class CartPage(HeaderPage):
             act_tax = self.parse_num_to_price((subtotal_price / 100) * 15)
             exp_tax = self.taxes.get_text_of_element()
 
-            self.assert_data_equal_data(
+            self.expect.assert_data_equal_data(
                 act_res=act_tax,
                 exp_res=exp_tax,
                 message='Некорректный размер комиссии'
@@ -180,17 +178,15 @@ class CartPage(HeaderPage):
 
     def check_total_price_with_tax(self):
         with allure.step(f'Проверить {self.total_price.name}'):
-            act = self.get_total_price_with_tax()
-            exp = self.total_price.get_text_of_element()
-
-            self.assert_data_equal_data(
-                act_res=act,
-                exp_res=exp,
-                message=f'Некорректная {self.total_price.name}'
+            self.expect.elt_to_have_text(
+                element=self.total_price.find_element(),
+                element_name=self.total_price.name,
+                exp_text=self.get_total_price_with_tax()
             )
 
     def get_subtotal_price(self):
-        prices = [p.text for p in self.product_price.get_elements()]
+        # prices = [p.inner_text().replace('\u00A0', ' ') for p in self.product_price.find_elements()]
+        prices = self.product_price.get_inner_text_list()
         new_prices = [self.parse_price_to_num(p) for p in prices]
 
         summ_prices = sum(new_prices)

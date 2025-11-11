@@ -212,7 +212,7 @@ class ProductPage(BasePage):
 
     def get_primary_info_about_product_on_product_page(self, cost_calculation=True):
         with allure.step('Получить основную информацию о товаре'):
-            title = self.product_title_on_page.get_text_of_element()
+            title = self.get_prod_title_on_page()
             price = self.get_prod_price_on_page(cost_calculation=cost_calculation)
             quantity = self.get_prod_units_quantity_on_product_page()
 
@@ -223,6 +223,9 @@ class ProductPage(BasePage):
         color = self.select_product_color()
 
         return material, color
+
+    def get_prod_title_on_page(self):
+        return self.product_title_on_page.get_text_of_element()
 
     def get_prod_price_on_page(self, cost_calculation=True):
         price = self.product_price_on_page.get_text_of_element()
