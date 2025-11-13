@@ -2,7 +2,7 @@ import os
 
 import pytest
 from dotenv import load_dotenv
-from playwright.sync_api import Page, BrowserContext
+from playwright.sync_api import BrowserContext
 
 from config.links import Links
 from pages.account_page import AccountPage

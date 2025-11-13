@@ -4,8 +4,6 @@ import pytest
 from config.base_test import BaseTest
 from data_for_tests.data_for_tests import PlaceHolder, InputData, InfoMessage
 
-from time import sleep
-
 
 @pytest.mark.order(2)
 @allure.suite('Главная страница')
@@ -18,7 +16,6 @@ class TestMainPage(BaseTest):
         self.main_page.is_opened()
         self.main_page.check_placeholder_in_search_input(PlaceHolder.MAIN_PAGE_SEARCH_INPUT)
 
-    #@pytest.mark.test
     @allure.title('Выбор товара на главной странице')
     @allure.severity(allure.severity_level.CRITICAL)
     def test_select_product_on_main_page(self):

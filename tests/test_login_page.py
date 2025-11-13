@@ -4,8 +4,6 @@ import pytest
 from config.base_test import BaseTest
 from data_for_tests.data_for_tests import PlaceHolder, UserData, ErrorMessage
 
-from time import sleep
-
 
 @pytest.mark.order(1)
 @allure.suite('Страница логина')

@@ -6,4 +6,3 @@ class Links:
     CART_PAGE = f'{MAIN_PAGE}shop/cart'
 
     CUSTOMIZE_DESK_PAGE = f'{MAIN_PAGE}shop/customizable-desk-9#attr=1,3'
-    

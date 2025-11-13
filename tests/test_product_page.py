@@ -4,6 +4,7 @@ import pytest
 from config.base_test import BaseTest
 from data_for_tests.data_for_tests import ProductInfo
 
+
 @allure.suite('Страница товара')
 class TestProductPage(BaseTest):
 
