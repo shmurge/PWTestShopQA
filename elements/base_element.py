@@ -12,9 +12,6 @@ class BaseElement:
     def find_element(self) -> Locator:
         return self.page.locator(self.selector)
 
-    # def find_elements(self):
-    #     return self.page.locator(self.selector).element_handles()
-
     def find_elements(self):
         return self.page.locator(self.selector).all()
 

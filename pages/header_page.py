@@ -6,8 +6,6 @@ from elements.input import Input
 from locators.locs_header_page import HeaderPageLocators
 from pages.base_page import BasePage
 
-from time import sleep
-
 
 class HeaderPage(BasePage):
 
