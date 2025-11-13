@@ -8,6 +8,7 @@ from pages.base_page import BasePage
 
 from time import sleep
 
+
 class HeaderPage(BasePage):
 
     def __init__(self, page):
@@ -78,7 +79,6 @@ class HeaderPage(BasePage):
                 element_name=self.sign_in_button.name
             )
 
-
     def check_prods_quantity_in_header(self, exp):
         with allure.step('Проверить количество товаров в счетчике хэдера'):
             self.expect.elt_to_have_text(
@@ -87,10 +87,5 @@ class HeaderPage(BasePage):
                 exp_text=str(exp)
             )
 
-            #act = int(self.counter_on_cart.get_text_of_element())
-
-            # assert self.wait.until(
-            #     self.ec.text_to_be_present_in_element(self.counter_on_cart.locator, str(exp))
-            # ), (f'Некорректное количество товаров в счетчике хэдера\n'
-            #     f'ОР: {exp}\n'
-            #     f'ФР: {act}')
+    def get_prods_quantity_in_header(self):
+        return int(self.counter_on_cart.get_text_of_element())
