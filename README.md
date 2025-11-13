@@ -76,7 +76,7 @@ ___
 
 ```mermaid
 ---
-title: PageObject model
+title: pages
 ---
 graph LR
 base_page --> header_page;
@@ -87,8 +87,6 @@ header_page --> login_page;
 header_page --> main_page;
 header_page --> modal_add_to_cart_page;
 header_page --> product_page;
-base_element --> button;
-base_element --> input;
 ```
 ```mermaid
 ---
