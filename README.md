@@ -87,12 +87,8 @@ header_page --> login_page;
 header_page --> main_page;
 header_page --> modal_add_to_cart_page;
 header_page --> product_page;
----
-elements
----
-graph LR
 base_element --> button;
-base_element --> input
+base_element --> input;
 ```
 ___
 
