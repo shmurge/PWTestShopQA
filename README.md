@@ -90,6 +90,14 @@ header_page --> product_page;
 base_element --> button;
 base_element --> input;
 ```
+```mermaid
+---
+title: elements
+---
+graph LR
+base_element --> button;
+base_element --> input;
+```
 ___
 
 ## Установка
