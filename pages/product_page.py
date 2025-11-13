@@ -110,6 +110,7 @@ class ProductPage(BasePage):
             for i in range(1, quantity + 1):
                 self.main_page.open()
                 self.main_page.is_opened()
+                self.wait_loading_page()
                 self.main_page.select_random_product()
                 self.add_prod_to_cart_and_continue_shopping()
                 self.header_page.check_prods_quantity_in_header(i)

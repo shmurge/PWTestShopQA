@@ -131,12 +131,13 @@ class CartPage(HeaderPage):
             titles = self.product_title.get_inner_text_list()
             remove_buttons = self.delete_product_button.find_elements()
             prod_title = random.choice(titles)
+            prods_cnt = self.get_prods_quantity_in_header()
 
             for i in range(len(titles)):
                 if prod_title in titles[i]:
                     self.delete_product_button.move_to_element(remove_buttons[i])
                     remove_buttons[i].click()
-                    self.delete_product_button.wait_for_hidden(element=remove_buttons[i])
+                    self.check_prods_quantity_in_header(prods_cnt - 1)
 
             return prod_title
 
