@@ -4,7 +4,7 @@ import pytest
 from config.base_test import BaseTest
 from data_for_tests.data_for_tests import ProductInfo
 
-
+@allure.suite('Страница товара')
 class TestProductPage(BaseTest):
 
     @allure.title('Добавление товара в корзину')
@@ -92,7 +92,7 @@ class TestProductPage(BaseTest):
             self, pre_go_to_customize_desk_page, material, color, result_title
     ):
         self.product_page.choose_material_on_page(material)
-        self.product_page.choose_color_on_page(color)
+        self.product_page.choose_color_on_page(material, color)
         self.product_page.open_modal_add_to_cart()
         self.modal_add_to_cart.check_product_title(result_title, full_match=True)
 

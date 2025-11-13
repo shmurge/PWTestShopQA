@@ -4,7 +4,6 @@ import pytest
 from config.base_test import BaseTest
 
 
-@pytest.mark.test
 @allure.suite('Корзина')
 class TestCartPage(BaseTest):
 

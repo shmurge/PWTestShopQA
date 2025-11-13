@@ -156,17 +156,18 @@ class CartPage(HeaderPage):
                 message='Некорректная стоимость товара'
             )
 
-    def check_subtotal_price(self):
+    def check_subtotal_price(self, exp=None):
+        exp = exp if exp else self.get_subtotal_price()
         with allure.step(f'Проверить {self.subtotal_price.name}'):
             self.expect.elt_to_have_text(
                 element=self.subtotal_price.find_element(),
                 element_name=self.subtotal_price.name,
-                exp_text=self.get_subtotal_price()
+                exp_text=exp
             )
 
-    def tax_should_be_15_percent(self):
+    def tax_should_be_15_percent(self, subtotal_price=None):
+        subtotal_price = subtotal_price if subtotal_price else self.parse_price_to_num(self.get_subtotal_price())
         with allure.step(f'{self.taxes.name} должна составлять 15%'):
-            subtotal_price = self.parse_price_to_num(self.get_subtotal_price())
             act_tax = self.parse_num_to_price((subtotal_price / 100) * 15)
             exp_tax = self.taxes.get_text_of_element()
 
@@ -176,16 +177,16 @@ class CartPage(HeaderPage):
                 message='Некорректный размер комиссии'
             )
 
-    def check_total_price_with_tax(self):
+    def check_total_price_with_tax(self, total_price_with_tax=None):
+        total_price_with_tax = total_price_with_tax if total_price_with_tax else self.get_total_price_with_tax()
         with allure.step(f'Проверить {self.total_price.name}'):
             self.expect.elt_to_have_text(
                 element=self.total_price.find_element(),
                 element_name=self.total_price.name,
-                exp_text=self.get_total_price_with_tax()
+                exp_text=total_price_with_tax
             )
 
     def get_subtotal_price(self):
-        # prices = [p.inner_text().replace('\u00A0', ' ') for p in self.product_price.find_elements()]
         prices = self.product_price.get_inner_text_list()
         new_prices = [self.parse_price_to_num(p) for p in prices]
 
