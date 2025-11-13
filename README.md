@@ -90,6 +90,7 @@ header_page --> product_page;
 ---
 elements
 ---
+graph LR
 base_element --> button;
 base_element --> input
 ```
