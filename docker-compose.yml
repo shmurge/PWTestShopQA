@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+  run_tests_in_chrome:
+    image: shmurge-pw-python:3.11-with-chrome-firefox
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/usr/workspace
+    command: /bin/sh -c "ls -la && pytest -vs --reruns=3 -n=5 --alluredir=allure-results"
+    working_dir: /usr/workspace
+    environment:
+      - USERNAME=${USERNAME}
+      - LOGIN=${LOGIN}
+      - PASSWORD=${PASSWORD}
+  run_tests_in_firefox:
+    image: shmurge-pw-python:3.11-with-chrome-firefox
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/usr/workspace
+    command: /bin/sh -c "ls -la && pytest -vs --reruns=3 -n=5 --browser=firefox --alluredir=allure-results"
+    working_dir: /usr/workspace
+    environment:
+      - USERNAME=${USERNAME}
+      - LOGIN=${LOGIN}
+      - PASSWORD=${PASSWORD}
+  report:
+    image: shmurge-pw-python:3.11-with-chrome-firefox
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/usr/workspace
+    command: /bin/sh -c "allure generate allure-results --clean -o allure-report"
+    working_dir: /usr/workspace
