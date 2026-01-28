@@ -11,6 +11,7 @@ from data_for_tests.data_for_tests import UserData, InputData, ErrorMessage, Pla
 class TestCreateAccountPage(BaseTest):
 
     @pytest.mark.order(1)
+    @allure.feature('Пользователь')
     @allure.title('Создание аккаунта')
     @allure.severity(allure.severity_level.CRITICAL)
     def test_create_account(self):
@@ -28,6 +29,7 @@ class TestCreateAccountPage(BaseTest):
         )
         self.header_page.username_is_correct(InputData.USERNAME)
 
+    @allure.feature('Пользователь')
     @allure.title('Нельзя создать аккаунт, если email уже занят')
     @allure.severity(allure.severity_level.CRITICAL)
     def test_create_account_with_already_registered_email(self):
@@ -42,6 +44,7 @@ class TestCreateAccountPage(BaseTest):
 
         self.create_account_page.error_alert_is_displayed(ErrorMessage.EMAIL_ALREADY_EXIST)
 
+    @allure.feature('Пользователь')
     @allure.title('Нельзя создать аккаунт, если пароли в инпутах Password и Confirm Password не идентичны')
     @allure.severity(allure.severity_level.NORMAL)
     def test_create_account_with_different_passwords(self):
@@ -55,6 +58,7 @@ class TestCreateAccountPage(BaseTest):
 
         self.create_account_page.error_alert_is_displayed(ErrorMessage.PASSWORDS_MISSMATCH)
 
+    @allure.feature('Дизайн')
     @allure.title('Проверка плэйсхолдеров формы регистрации')
     @allure.severity(allure.severity_level.TRIVIAL)
     def test_check_placeholders_in_registration_form(self):
@@ -63,6 +67,7 @@ class TestCreateAccountPage(BaseTest):
         self.create_account_page.check_placeholders_in_registration_form(
             PlaceHolder.CREATE_ACCOUNT_FORM_USERNAME_INPUT)
 
+    @allure.feature('Навигация')
     @allure.title('Переход на страницу логина')
     @allure.severity(allure.severity_level.TRIVIAL)
     def test_goto_login_page(self):
